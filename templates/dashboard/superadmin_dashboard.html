@@ -1,0 +1,400 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+{% endblock %}
+
+{% block page_title %}Superadmin Control Center{% endblock %}
+
+{% block sidebar_items %}
+<div class="space-y-2">
+    <div class="px-3 py-2">
+        <span class="text-xs font-semibold text-white/70 uppercase tracking-wider">Core Controls</span>
+    </div>
+    
+    <a href="{% url 'superadmin_dashboard' %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary transition-all duration-200 group">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="fas fa-solar-system text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <span class="font-medium">Command Center</span>
+            <p class="text-xs text-white/70">System Overview</p>
+        </div>
+    </a>
+
+    <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary transition-all duration-200 group">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-red-500/20 to-orange-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="fas fa-shield-alt text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <span class="font-medium">Security Hub</span>
+            <p class="text-xs text-white/70">Access & Permissions</p>
+        </div>
+    </a>
+
+    <div class="px-3 py-2 mt-6">
+        <span class="text-xs font-semibold text-white/70 uppercase tracking-wider">Management</span>
+    </div>
+
+    <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary transition-all duration-200 group">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="fas fa-users-cog text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <span class="font-medium">User Management</span>
+            <p class="text-xs text-white/70">Control Access Levels</p>
+        </div>
+    </a>
+
+    <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary transition-all duration-200 group">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="fas fa-newspaper text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <span class="font-medium">Content Control</span>
+            <p class="text-xs text-white/70">Manage All Content</p>
+        </div>
+    </a>
+
+    <div class="px-3 py-2 mt-6">
+        <span class="text-xs font-semibold text-white/70 uppercase tracking-wider">System</span>
+    </div>
+
+    <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary transition-all duration-200 group">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="fas fa-chart-network text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <span class="font-medium">System Health</span>
+            <p class="text-xs text-white/70">Performance Metrics</p>
+        </div>
+    </a>
+
+    <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary transition-all duration-200 group">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="fas fa-cogs text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <span class="font-medium">Configuration</span>
+            <p class="text-xs text-white/70">System Settings</p>
+        </div>
+    </a>
+</div>
+{% endblock %}
+
+{% block dashboard_content %}
+<!-- Quick Access Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="col-span-full">
+        <div class="bg-gradient-to-r from-primary to-secondary p-6 rounded-2xl shadow-lg">
+            <div class="flex items-center justify-between">
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-bold text-white">Welcome back, {{ user.get_full_name }}</h2>
+                    <p class="text-white/80">System Status: Operational</p>
+                </div>
+                <div class="flex space-x-4">
+                    <button class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200">
+                        <i class="fas fa-bell mr-2"></i> Notifications
+                    </button>
+                    <button class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200">
+                        <i class="fas fa-cog mr-2"></i> Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Stats -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-105 transition-all duration-300">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">System Load</h3>
+            <div class="relative">
+                <div class="w-16 h-16">
+                    <canvas id="systemLoadChart"></canvas>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-sm font-bold text-primary">28%</span>
+                </div>
+            </div>
+        </div>
+        <div class="space-y-3">
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">CPU Usage</span>
+                <span class="text-sm font-medium text-gray-900">28%</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Memory</span>
+                <span class="text-sm font-medium text-gray-900">42%</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Storage</span>
+                <span class="text-sm font-medium text-gray-900">64%</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-105 transition-all duration-300">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Active Users</h3>
+            <div class="w-16 h-16" id="activeUsersChart"></div>
+        </div>
+        <div class="space-y-3">
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Online Now</span>
+                <span class="text-sm font-medium text-green-500">124</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">24h Peak</span>
+                <span class="text-sm font-medium text-gray-900">256</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Growth</span>
+                <span class="text-sm font-medium text-green-500">+12%</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-105 transition-all duration-300">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Security Status</h3>
+            <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                <i class="fas fa-shield-check text-green-500"></i>
+            </div>
+        </div>
+        <div class="space-y-3">
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Threats Blocked</span>
+                <span class="text-sm font-medium text-gray-900">1,284</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Last Scan</span>
+                <span class="text-sm font-medium text-gray-900">2h ago</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">SSL Status</span>
+                <span class="text-sm font-medium text-green-500">Secure</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-105 transition-all duration-300">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">System Updates</h3>
+            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                <i class="fas fa-sync text-blue-500"></i>
+            </div>
+        </div>
+        <div class="space-y-3">
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Available</span>
+                <span class="text-sm font-medium text-primary">3 Updates</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Last Update</span>
+                <span class="text-sm font-medium text-gray-900">1d ago</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Auto-Update</span>
+                <span class="text-sm font-medium text-green-500">Enabled</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Control Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+    <!-- User Management -->
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">User Management</h3>
+            <button class="text-primary hover:text-primary/80">
+                <i class="fas fa-ellipsis-h"></i>
+            </button>
+        </div>
+        <div class="space-y-4">
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
+                <div class="flex items-center space-x-3">
+                    <img src="{% static 'images/avatar1.jpg' %}" alt="User" class="w-10 h-10 rounded-full">
+                    <div>
+                        <p class="text-sm font-medium text-gray-900">John Doe</p>
+                        <p class="text-xs text-gray-500">Administrator</p>
+                    </div>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="p-2 text-red-600 hover:bg-red-50 rounded-lg">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- More user items -->
+        </div>
+        <button class="mt-4 w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+            Manage Users
+        </button>
+    </div>
+
+    <!-- System Logs -->
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">System Logs</h3>
+            <div class="flex space-x-2">
+                <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200">
+                    All
+                </button>
+                <button class="px-3 py-1 text-xs bg-red-100 text-red-600 rounded-full hover:bg-red-200">
+                    Errors
+                </button>
+                <button class="px-3 py-1 text-xs bg-yellow-100 text-yellow-600 rounded-full hover:bg-yellow-200">
+                    Warnings
+                </button>
+            </div>
+        </div>
+        <div class="space-y-4 max-h-80 overflow-y-auto">
+            {% for log in system_logs %}
+            <div class="p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-900">{{ log.message }}</span>
+                    <span class="text-xs text-gray-500">{{ log.timestamp }}</span>
+                </div>
+                <p class="text-xs text-gray-600 mt-1">{{ log.details }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
+        <div class="grid grid-cols-2 gap-4">
+            <button class="p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors text-center group">
+                <i class="fas fa-user-plus text-2xl text-blue-600 group-hover:scale-110 transition-transform"></i>
+                <p class="mt-2 text-sm font-medium text-gray-900">Add User</p>
+            </button>
+            
+            <button class="p-4 bg-green-50 rounded-xl hover:bg-green-100 transition-colors text-center group">
+                <i class="fas fa-backup text-2xl text-green-600 group-hover:scale-110 transition-transform"></i>
+                <p class="mt-2 text-sm font-medium text-gray-900">Backup</p>
+            </button>
+            
+            <button class="p-4 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors text-center group">
+                <i class="fas fa-lock text-2xl text-purple-600 group-hover:scale-110 transition-transform"></i>
+                <p class="mt-2 text-sm font-medium text-gray-900">Permissions</p>
+            </button>
+            
+            <button class="p-4 bg-orange-50 rounded-xl hover:bg-orange-100 transition-colors text-center group">
+                <i class="fas fa-chart-bar text-2xl text-orange-600 group-hover:scale-110 transition-transform"></i>
+                <p class="mt-2 text-sm font-medium text-gray-900">Reports</p>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Performance Metrics -->
+<div class="mt-6">
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">Performance Metrics</h3>
+            <div class="flex space-x-4">
+                <button class="px-4 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200">
+                    Daily
+                </button>
+                <button class="px-4 py-2 text-sm bg-primary text-white rounded-lg">
+                    Weekly
+                </button>
+                <button class="px-4 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200">
+                    Monthly
+                </button>
+            </div>
+        </div>
+        <div class="h-80" id="performanceChart"></div>
+    </div>
+</div>
+
+<script>
+// Initialize charts
+document.addEventListener('DOMContentLoaded', function() {
+    // System Load Chart
+    const systemLoadCtx = document.getElementById('systemLoadChart').getContext('2d');
+    new Chart(systemLoadCtx, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [28, 72],
+                backgroundColor: ['#4F46E5', '#E5E7EB'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutout: '80%',
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+
+    // Active Users Chart
+    const activeUsersOptions = {
+        series: [{
+            data: [31, 40, 28, 51, 42, 109, 100]
+        }],
+        chart: {
+            type: 'area',
+            height: 80,
+            sparkline: {
+                enabled: true
+            }
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        fill: {
+            opacity: 0.3
+        },
+        colors: ['#4F46E5']
+    };
+    new ApexCharts(document.querySelector("#activeUsersChart"), activeUsersOptions).render();
+
+    // Performance Chart
+    const performanceOptions = {
+        series: [{
+            name: 'Page Load Time',
+            data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
+        }, {
+            name: 'Server Response',
+            data: [20, 35, 40, 45, 39, 52, 75, 80, 100]
+        }],
+        chart: {
+            height: 350,
+            type: 'area',
+            toolbar: {
+                show: false
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        xaxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
+        },
+        tooltip: {
+            x: {
+                format: 'dd/MM/yy HH:mm'
+            }
+        }
+    };
+    new ApexCharts(document.querySelector("#performanceChart"), performanceOptions).render();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Admin Dashboard</h1>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">News Overview</h5>
+                    <p class="card-text">Total Articles: {{ all_news.count }}</p>
+                    <p class="card-text">Published: {{ all_news.filter.is_published.count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">All News Articles</h5>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Status</th>
+                            <th>Views</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for article in all_news %}
+                        <tr>
+                            <td>{{ article.title }}</td>
+                            <td>{{ article.author.get_full_name }}</td>
+                            <td>
+                                {% if article.is_published %}
+                                    <span class="badge bg-success">Published</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Draft</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ article.views }}</td>
+                            <td>
+                                <a href="{% url 'news_detail' article.slug %}" class="btn btn-sm btn-info">View</a>
+                                <a href="#" class="btn btn-sm btn-primary">Edit</a>
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No articles found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,407 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+{% endblock %}
+
+{% block page_title %}Content Studio{% endblock %}
+
+{% block sidebar_items %}
+<div class="space-y-2">
+    <div class="px-3 py-2">
+        <span class="text-xs font-semibold text-white/70 uppercase tracking-wider">Workspace</span>
+    </div>
+    
+    <a href="{% url 'editor_dashboard' %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary transition-all duration-200 group">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="fas fa-pen-fancy text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <span class="font-medium">Content Studio</span>
+            <p class="text-xs text-white/70">Create & Edit</p>
+        </div>
+    </a>
+
+    <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary transition-all duration-200 group">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="fas fa-newspaper text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <span class="font-medium">My Articles</span>
+            <p class="text-xs text-white/70">View & Manage</p>
+        </div>
+    </a>
+
+    <div class="px-3 py-2 mt-6">
+        <span class="text-xs font-semibold text-white/70 uppercase tracking-wider">Content</span>
+    </div>
+
+    <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary transition-all duration-200 group">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="fas fa-edit text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <span class="font-medium">Drafts</span>
+            <p class="text-xs text-white/70">Work in Progress</p>
+        </div>
+    </a>
+
+    <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary transition-all duration-200 group">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="fas fa-tasks text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <span class="font-medium">Assignments</span>
+            <p class="text-xs text-white/70">Tasks & Deadlines</p>
+        </div>
+    </a>
+
+    <div class="px-3 py-2 mt-6">
+        <span class="text-xs font-semibold text-white/70 uppercase tracking-wider">Tools</span>
+    </div>
+
+    <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary transition-all duration-200 group">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="fas fa-images text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <span class="font-medium">Media Library</span>
+            <p class="text-xs text-white/70">Images & Videos</p>
+        </div>
+    </a>
+
+    <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary transition-all duration-200 group">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-red-500/20 to-pink-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="fas fa-chart-line text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <span class="font-medium">Analytics</span>
+            <p class="text-xs text-white/70">Content Performance</p>
+        </div>
+    </a>
+</div>
+{% endblock %}
+
+{% block dashboard_content %}
+<!-- Welcome Banner -->
+<div class="bg-gradient-to-r from-primary to-secondary p-6 rounded-2xl shadow-lg mb-6">
+    <div class="flex items-center justify-between">
+        <div class="space-y-2">
+            <h2 class="text-2xl font-bold text-white">Welcome to Content Studio</h2>
+            <p class="text-white/80">You have {{ pending_tasks }} pending tasks and {{ draft_count }} drafts in progress</p>
+        </div>
+        <button class="px-4 py-2 bg-white text-primary rounded-lg hover:bg-white/90 transition-all duration-200">
+            <i class="fas fa-plus mr-2"></i> New Article
+        </button>
+    </div>
+</div>
+
+<!-- Content Stats -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+    <div class="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-105 transition-all duration-300">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Published</h3>
+            <div class="relative">
+                <div class="w-16 h-16">
+                    <canvas id="publishedChart"></canvas>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-sm font-bold text-primary">{{ published_count }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2 text-sm">
+            <i class="fas fa-arrow-up text-green-500"></i>
+            <span class="text-green-500 font-medium">+12%</span>
+            <span class="text-gray-500">from last month</span>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-105 transition-all duration-300">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Views</h3>
+            <div class="w-16 h-16" id="viewsChart"></div>
+        </div>
+        <div class="flex items-center space-x-2 text-sm">
+            <i class="fas fa-arrow-up text-green-500"></i>
+            <span class="text-green-500 font-medium">+28%</span>
+            <span class="text-gray-500">from last month</span>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-105 transition-all duration-300">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Engagement</h3>
+            <div class="w-16 h-16" id="engagementChart"></div>
+        </div>
+        <div class="flex items-center space-x-2 text-sm">
+            <i class="fas fa-arrow-up text-green-500"></i>
+            <span class="text-green-500 font-medium">+18%</span>
+            <span class="text-gray-500">from last month</span>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-105 transition-all duration-300">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Time Spent</h3>
+            <div class="w-16 h-16" id="timeSpentChart"></div>
+        </div>
+        <div class="flex items-center space-x-2 text-sm">
+            <i class="fas fa-clock text-blue-500"></i>
+            <span class="text-gray-900 font-medium">4.2h</span>
+            <span class="text-gray-500">avg. daily</span>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Area -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Current Tasks -->
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">Current Tasks</h3>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 text-xs bg-primary text-white rounded-full">
+                        All
+                    </button>
+                    <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200">
+                        Due Soon
+                    </button>
+                    <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200">
+                        Completed
+                    </button>
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                {% for task in tasks %}
+                <div class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <input type="checkbox" class="w-5 h-5 text-primary rounded border-gray-300 focus:ring-primary">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-900">{{ task.title }}</h4>
+                                <p class="text-xs text-gray-500">Due: {{ task.due_date }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-1 text-xs rounded-full 
+                                {% if task.priority == 'high' %}bg-red-100 text-red-800
+                                {% elif task.priority == 'medium' %}bg-yellow-100 text-yellow-800
+                                {% else %}bg-green-100 text-green-800{% endif %}">
+                                {{ task.priority|title }}
+                            </span>
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-8">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-tasks text-2xl text-gray-400"></i>
+                    </div>
+                    <p class="text-gray-500">No tasks assigned</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Draft Articles -->
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">Recent Drafts</h3>
+            <button class="text-primary hover:text-primary/80">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+        
+        <div class="space-y-4">
+            {% for draft in drafts %}
+            <div class="group p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-200">
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-sm font-medium text-gray-900">{{ draft.title }}</h4>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex space-x-2">
+                        <button class="p-1 text-blue-600 hover:bg-blue-50 rounded">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="p-1 text-red-600 hover:bg-red-50 rounded">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-gray-500">Last edited: {{ draft.last_edited }}</span>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2 py-1 bg-gray-200 text-gray-800 rounded-full">{{ draft.category }}</span>
+                        <span class="text-gray-500">{{ draft.word_count }} words</span>
+                    </div>
+                </div>
+                <div class="mt-2 h-1 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-primary" style="width: {{ draft.progress }}%"></div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-8">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-edit text-2xl text-gray-400"></i>
+                </div>
+                <p class="text-gray-500">No draft articles</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Content Performance -->
+<div class="mt-6">
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">Content Performance</h3>
+            <div class="flex space-x-4">
+                <button class="px-4 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200">
+                    7 Days
+                </button>
+                <button class="px-4 py-2 text-sm bg-primary text-white rounded-lg">
+                    30 Days
+                </button>
+                <button class="px-4 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200">
+                    90 Days
+                </button>
+            </div>
+        </div>
+        <div class="h-80" id="performanceChart"></div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Published Articles Chart
+    const publishedCtx = document.getElementById('publishedChart').getContext('2d');
+    new Chart(publishedCtx, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [75, 25],
+                backgroundColor: ['#4F46E5', '#E5E7EB'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutout: '80%',
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+
+    // Views Chart
+    const viewsOptions = {
+        series: [{
+            data: [31, 40, 28, 51, 42, 109, 100]
+        }],
+        chart: {
+            type: 'area',
+            height: 80,
+            sparkline: {
+                enabled: true
+            }
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        fill: {
+            opacity: 0.3
+        },
+        colors: ['#4F46E5']
+    };
+    new ApexCharts(document.querySelector("#viewsChart"), viewsOptions).render();
+
+    // Engagement Chart
+    const engagementOptions = {
+        series: [{
+            data: [25, 66, 41, 89, 63, 25, 44]
+        }],
+        chart: {
+            type: 'area',
+            height: 80,
+            sparkline: {
+                enabled: true
+            }
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        fill: {
+            opacity: 0.3
+        },
+        colors: ['#4F46E5']
+    };
+    new ApexCharts(document.querySelector("#engagementChart"), engagementOptions).render();
+
+    // Time Spent Chart
+    const timeSpentOptions = {
+        series: [{
+            data: [31, 40, 28, 51, 42, 109, 100]
+        }],
+        chart: {
+            type: 'area',
+            height: 80,
+            sparkline: {
+                enabled: true
+            }
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        fill: {
+            opacity: 0.3
+        },
+        colors: ['#4F46E5']
+    };
+    new ApexCharts(document.querySelector("#timeSpentChart"), timeSpentOptions).render();
+
+    // Performance Chart
+    const performanceOptions = {
+        series: [{
+            name: 'Views',
+            data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
+        }, {
+            name: 'Engagement',
+            data: [20, 35, 40, 45, 39, 52, 75, 80, 100]
+        }],
+        chart: {
+            height: 350,
+            type: 'area',
+            toolbar: {
+                show: false
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        xaxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
+        },
+        tooltip: {
+            x: {
+                format: 'dd/MM/yy HH:mm'
+            }
+        }
+    };
+    new ApexCharts(document.querySelector("#performanceChart"), performanceOptions).render();
+});
+</script>
+{% endblock %}

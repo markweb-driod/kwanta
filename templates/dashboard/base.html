@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen" x-data="{ sidebarOpen: false }">
+    <!-- Sidebar Overlay -->
+    <div x-show="sidebarOpen" 
+         class="fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity lg:hidden"
+         x-transition:enter="transition-opacity ease-linear duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity ease-linear duration-300"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="sidebarOpen = false"
+         x-cloak></div>
+
+    <!-- Sidebar -->
+    <div x-show="sidebarOpen" 
+         class="fixed inset-y-0 left-0 z-30 w-64 transform bg-primary transition duration-300 lg:translate-x-0 lg:static lg:inset-0"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="-translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="-translate-x-full"
+         x-cloak>
+        <div class="flex h-full flex-col">
+            <!-- Sidebar Header -->
+            <div class="flex h-16 items-center justify-between px-4 bg-primary/90">
+                <div class="flex items-center space-x-3">
+                    <img src="{% static 'images/nasarawa-logo.png' %}" alt="Logo" class="h-8 w-auto">
+                    <span class="text-lg font-semibold text-white">Dashboard</span>
+                </div>
+                <button class="lg:hidden text-white hover:text-secondary" @click="sidebarOpen = false">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Sidebar Content -->
+            <div class="flex-1 overflow-y-auto bg-primary/80 py-4">
+                <nav class="space-y-2 px-4">
+                    {% block sidebar_items %}
+                    <!-- Will be overridden by specific dashboard templates -->
+                    {% endblock %}
+                </nav>
+            </div>
+
+            <!-- Sidebar Footer -->
+            <div class="border-t border-white/10 p-4 bg-primary/90">
+                <div class="flex items-center space-x-3">
+                    <img src="{% static 'images/default-avatar.png' %}" alt="User" class="h-8 w-8 rounded-full">
+                    <div class="flex-1 text-sm">
+                        <p class="font-medium text-white">{{ user.get_full_name|default:user.username }}</p>
+                        <p class="text-xs text-white/70">{{ user.email }}</p>
+                    </div>
+                    <a href="{% url 'logout' %}" class="text-white hover:text-secondary transition-colors duration-200">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1">
+        <!-- Top Navigation -->
+        <div class="bg-white shadow-md">
+            <div class="px-4 py-4 lg:px-8">
+                <div class="flex items-center justify-between">
+                    <button class="text-gray-500 hover:text-primary focus:outline-none lg:hidden" @click="sidebarOpen = true">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="text-xl font-semibold text-gray-800">{% block page_title %}Dashboard{% endblock %}</div>
+                    <div class="flex items-center space-x-4">
+                        <button class="text-gray-500 hover:text-primary focus:outline-none" title="Notifications">
+                            <i class="fas fa-bell"></i>
+                        </button>
+                        <button class="text-gray-500 hover:text-primary focus:outline-none" title="Settings">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="p-4 lg:p-8 animate-fade-in">
+            {% block dashboard_content %}
+            <!-- Will be overridden by specific dashboard templates -->
+            {% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

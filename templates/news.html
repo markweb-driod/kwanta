@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- News Hero Section -->
+<section class="relative bg-[#23A455] text-white py-16 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#23A455] to-[#1a7a3f] opacity-90"></div>
+    <div class="container mx-auto px-4 relative">
+        <h1 class="text-4xl font-bold text-center mb-4 animate-slide-down"><i class="fas fa-newspaper mr-2"></i>Latest News</h1>
+        <p class="text-xl text-center max-w-3xl mx-auto animate-slide-up">Stay updated with the latest news and updates from the Ministry of Youth and Sports Development.</p>
+    </div>
+</section>
+
+<!-- News Grid -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for news in news_list %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover" data-aos="fade-up">
+                {% if news.cover_image %}
+                <img src="{{ news.cover_image.url }}" alt="{{ news.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+                <div class="p-6">
+                    <div class="text-sm text-gray-500 mb-2">
+                        <i class="far fa-calendar-alt mr-1"></i>{{ news.created_at|date:"F d, Y" }}
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-[#23A455]">{{ news.title }}</h3>
+                    <p class="text-gray-600 mb-4">{{ news.excerpt }}</p>
+                    <a href="{{ news.get_absolute_url }}" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300">
+                        Read More <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <p class="text-gray-600">No news articles found.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="mt-12 flex justify-center">
+            <nav class="flex items-center space-x-2">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-[#23A455] text-white rounded-lg hover:bg-[#1a7a3f] transition duration-300">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <span class="px-4 py-2 bg-[#23A455] text-white rounded-lg">{{ num }}</span>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-[#23A455] text-white rounded-lg hover:bg-[#1a7a3f] transition duration-300">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Newsletter Signup -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-4 text-[#23A455]"><i class="fas fa-envelope mr-2"></i>Subscribe to Our Newsletter</h2>
+            <p class="text-gray-600 mb-8">Stay updated with the latest news and updates from the Ministry of Youth and Sports Development.</p>
+            <form class="flex flex-col md:flex-row gap-4 justify-center">
+                <input type="email" placeholder="Enter your email" class="px-6 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-[#23A455] flex-grow max-w-md">
+                <button type="submit" class="bg-[#23A455] text-white px-8 py-3 rounded-lg hover:bg-[#1a7a3f] transition duration-300">
+                    <i class="fas fa-paper-plane mr-2"></i>Subscribe
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %} 

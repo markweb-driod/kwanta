@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Carousel Section -->
+<section class="relative h-[500px] w-full overflow-hidden">
+    <div class="carousel-container h-full w-full">
+        <!-- Slide 1 -->
+        <div class="carousel-slide absolute inset-0">
+            <img src="{% static 'images/cou3.jpg' %}" alt="Youth Sports" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/50"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center text-white">
+                    <h2 class="text-4xl font-bold mb-4 animate-slide-down">Empowering Youth Through Sports</h2>
+                    <p class="text-xl mb-8 animate-slide-up">Building champions for tomorrow</p>
+                    <a href="{% url 'programs' %}" class="btn-primary px-8 py-3 rounded-lg font-semibold inline-block">
+                        <i class="fas fa-running mr-2"></i>Explore Programs
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 2 -->
+        <div class="carousel-slide absolute inset-0">
+            <img src="{% static 'images/couteam.jpg' %}" alt="Sports Facilities" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/50"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center text-white">
+                    <h2 class="text-4xl font-bold mb-4 animate-slide-down">State-of-the-Art Facilities</h2>
+                    <p class="text-xl mb-8 animate-slide-up">Developing champions in world-class environments</p>
+                    <a href="{% url 'about' %}" class="btn-primary px-8 py-3 rounded-lg font-semibold inline-block">
+                        <i class="fas fa-info-circle mr-2"></i>Learn More
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 3 -->
+        <div class="carousel-slide absolute inset-0">
+            <img src="{% static 'images/cou33.jpg' %}" alt="Youth Development" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/50"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center text-white">
+                    <h2 class="text-4xl font-bold mb-4 animate-slide-down">Youth Development Programs</h2>
+                    <p class="text-xl mb-8 animate-slide-up">Nurturing talent and building leaders</p>
+                    <a href="{% url 'contact' %}" class="btn-primary px-8 py-3 rounded-lg font-semibold inline-block">
+                        <i class="fas fa-envelope mr-2"></i>Get Involved
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Carousel Controls -->
+    <button class="carousel-prev absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 text-white p-2 rounded-full hover:bg-white/30 transition duration-300">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="carousel-next absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 text-white p-2 rounded-full hover:bg-white/30 transition duration-300">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+    
+    <!-- Carousel Indicators -->
+    <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition duration-300"></button>
+        <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition duration-300"></button>
+        <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition duration-300"></button>
+    </div>
+</section>
+
+<!-- Hero Section -->
+<section class="relative bg-[#23A455] text-white py-20 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#23A455] to-[#1a7a3f] opacity-90"></div>
+    <div class="container mx-auto px-4 relative">
+        <div class="max-w-3xl mx-auto text-center">
+            <h1 class="text-5xl font-bold mb-6 animate-slide-down">Empowering Youth Through Sports</h1>
+            <p class="text-xl mb-8 animate-slide-up">Building a brighter future for Nasarawa State through youth development and sporting excellence.</p>
+            <a href="{% url 'programs' %}" class="bg-[var(--nasarawa-yellow)] text-[#23A455] px-8 py-3 rounded-lg font-semibold hover:bg-[#e6c200] transition duration-300 inline-block">
+                <i class="fas fa-running mr-2"></i>Explore Our Programs
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured News Section -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12 text-[#23A455]"><i class="fas fa-newspaper mr-2"></i>Featured News</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for news in featured_news %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover" data-aos="fade-up">
+                {% if news.cover_image %}
+                <img src="{{ news.cover_image.url }}" alt="{{ news.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+                <div class="p-6">
+                    <div class="text-sm text-gray-500 mb-2">
+                        <i class="far fa-calendar-alt mr-1"></i>{{ news.created_at|date:"F d, Y" }}
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-[#23A455]">{{ news.title }}</h3>
+                    <p class="text-gray-600 mb-4">{{ news.excerpt }}</p>
+                    <a href="{{ news.get_absolute_url }}" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300">
+                        Read More <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Latest News Section -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12 text-[#23A455]"><i class="fas fa-clock mr-2"></i>Latest News</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for news in latest_news %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover" data-aos="fade-up">
+                {% if news.cover_image %}
+                <img src="{{ news.cover_image.url }}" alt="{{ news.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+                <div class="p-6">
+                    <div class="text-sm text-gray-500 mb-2">
+                        <i class="far fa-calendar-alt mr-1"></i>{{ news.created_at|date:"F d, Y" }}
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-[#23A455]">{{ news.title }}</h3>
+                    <p class="text-gray-600 mb-4">{{ news.excerpt }}</p>
+                    <a href="{{ news.get_absolute_url }}" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300">
+                        Read More <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Programs -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12 text-[#23A455]"><i class="fas fa-star mr-2"></i>Our Programs</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Youth Development -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover" data-aos="fade-up">
+                <div class="p-6">
+                    <div class="text-[#23A455] text-4xl mb-4">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4 text-[#23A455]">Youth Development</h3>
+                    <p class="text-gray-600 mb-4">Empowering young people through education, skills development, and leadership training.</p>
+                    <a href="#" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300">
+                        <i class="fas fa-arrow-right mr-1"></i>Learn More
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Sports Development -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover" data-aos="fade-up" data-aos-delay="100">
+                <div class="p-6">
+                    <div class="text-[#23A455] text-4xl mb-4">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4 text-[#23A455]">Sports Development</h3>
+                    <p class="text-gray-600 mb-4">Promoting sporting excellence through training, competitions, and facilities development.</p>
+                    <a href="#" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300">
+                        <i class="fas fa-arrow-right mr-1"></i>Learn More
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Community Engagement -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover" data-aos="fade-up" data-aos-delay="200">
+                <div class="p-6">
+                    <div class="text-[#23A455] text-4xl mb-4">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4 text-[#23A455]">Community Engagement</h3>
+                    <p class="text-gray-600 mb-4">Building stronger communities through youth and sports initiatives.</p>
+                    <a href="#" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300">
+                        <i class="fas fa-arrow-right mr-1"></i>Learn More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Ministry Image Section -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="relative" data-aos="fade-right">
+                <img src="{% static 'images/ministry-building.jpg' %}" alt="Ministry of Youth and Sports Building" class="rounded-lg shadow-lg w-full">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-lg"></div>
+            </div>
+            <div class="space-y-6" data-aos="fade-left">
+                <h2 class="text-3xl font-bold text-[#23A455]">About Our Ministry</h2>
+                <p class="text-gray-600">The Nasarawa State Ministry of Youth and Sports Development is dedicated to fostering youth empowerment and sporting excellence across the state. Our modern facilities and dedicated staff work together to create opportunities for young people to thrive.</p>
+                <a href="{% url 'about' %}" class="btn-primary px-6 py-2 rounded-lg font-semibold inline-block">
+                    <i class="fas fa-info-circle mr-2"></i>Learn More About Us
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="bg-[#23A455] rounded-lg text-white p-8 md:p-12 text-center relative overflow-hidden" data-aos="fade-up">
+            <div class="absolute inset-0 bg-gradient-to-r from-[#23A455] to-[#1a7a3f] opacity-90"></div>
+            <div class="relative">
+                <h2 class="text-3xl font-bold mb-4"><i class="fas fa-handshake mr-2"></i>Get Involved</h2>
+                <p class="text-xl mb-8">Join us in building a better future for Nasarawa State's youth</p>
+                <a href="{% url 'contact' %}" class="bg-white text-[#23A455] px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300 inline-block">
+                    <i class="fas fa-envelope mr-2"></i>Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add this script at the end of the file -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const slides = document.querySelectorAll('.carousel-slide');
+        const indicators = document.querySelectorAll('.carousel-indicator');
+        const prevBtn = document.querySelector('.carousel-prev');
+        const nextBtn = document.querySelector('.carousel-next');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            slides.forEach(slide => slide.style.opacity = '0');
+            indicators.forEach(indicator => indicator.classList.remove('bg-white'));
+            
+            slides[index].style.opacity = '1';
+            indicators[index].classList.add('bg-white');
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        // Event listeners
+        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide);
+        
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentSlide = index;
+                showSlide(currentSlide);
+            });
+        });
+
+        // Auto slide
+        setInterval(nextSlide, 5000);
+
+        // Initialize first slide
+        showSlide(0);
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- News Detail Hero -->
+<section class="relative bg-[#23A455] text-white py-16 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#23A455] to-[#1a7a3f] opacity-90"></div>
+    <div class="container mx-auto px-4 relative">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl font-bold mb-4 animate-slide-down">{{ news.title }}</h1>
+            <div class="flex items-center justify-center space-x-4 text-sm">
+                <span><i class="far fa-calendar-alt mr-1"></i>{{ news.created_at|date:"F d, Y" }}</span>
+                <span><i class="far fa-user mr-1"></i>{{ news.author.get_full_name|default:news.author.username }}</span>
+                <span><i class="far fa-eye mr-1"></i>{{ news.views }} views</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- News Content -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            {% if news.cover_image %}
+            <div class="mb-8 rounded-lg overflow-hidden shadow-lg">
+                <img src="{{ news.cover_image.url }}" alt="{{ news.title }}" class="w-full h-[400px] object-cover">
+            </div>
+            {% endif %}
+            
+            <div class="prose prose-lg max-w-none">
+                {{ news.content|safe }}
+            </div>
+            
+            <!-- Share Buttons -->
+            <div class="mt-12 pt-8 border-t">
+                <h3 class="text-xl font-semibold mb-4 text-[#23A455]">Share this article</h3>
+                <div class="flex space-x-4">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300">
+                        <i class="fab fa-facebook-f text-xl"></i>
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ news.title }}" target="_blank" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ news.title }}" target="_blank" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300">
+                        <i class="fab fa-linkedin-in text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related News -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12 text-[#23A455]"><i class="fas fa-newspaper mr-2"></i>Related News</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for related_news in news_list|slice:":3" %}
+            {% if related_news.id != news.id %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover" data-aos="fade-up">
+                {% if related_news.cover_image %}
+                <img src="{{ related_news.cover_image.url }}" alt="{{ related_news.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+                <div class="p-6">
+                    <div class="text-sm text-gray-500 mb-2">
+                        <i class="far fa-calendar-alt mr-1"></i>{{ related_news.created_at|date:"F d, Y" }}
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-[#23A455]">{{ related_news.title }}</h3>
+                    <p class="text-gray-600 mb-4">{{ related_news.excerpt }}</p>
+                    <a href="{{ related_news.get_absolute_url }}" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300">
+                        Read More <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %} 
