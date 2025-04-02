@@ -5,7 +5,7 @@ from django.views.generic import ListView, DetailView
 from django.contrib import messages
 from django.db.models import Count, Q
 from django.utils import timezone
-from .models import News, Program, Event, UserProfile, Category, Tag, Contact, Gallery, GalleryImage
+from .models import News, Program, Event, UserProfile, Category, Tag, Contact, Gallery, GalleryImage, Commissioner, Division
 from .forms import (
     NewsForm, ProgramForm, EventForm, UserProfileForm, CategoryForm, 
     TagForm, ContactForm, ContactResponseForm, GalleryForm, GalleryImageForm
@@ -16,12 +16,18 @@ def home(request):
     featured_programs = Program.objects.filter(is_active=True, featured=True)[:3]
     featured_events = Event.objects.filter(is_published=True, featured=True)[:3]
     featured_galleries = Gallery.objects.filter(is_published=True, featured=True)[:3]
+    latest_news = News.objects.filter(is_published=True)[:3]
+    commissioner = Commissioner.objects.first()
+    divisions = Division.objects.filter(is_active=True)
     
     context = {
         'featured_news': featured_news,
         'featured_programs': featured_programs,
         'featured_events': featured_events,
         'featured_galleries': featured_galleries,
+        'latest_news': latest_news,
+        'commissioner': commissioner,
+        'divisions': divisions,
     }
     return render(request, 'main/home.html', context)
 
@@ -56,6 +62,10 @@ class NewsListView(ListView):
             queryset = queryset.filter(category__name=category)
             
         return queryset.order_by('-created_at')
+
+def news_detail(request, slug):
+    news = get_object_or_404(News, slug=slug, is_published=True)
+    return render(request, 'main/news_detail.html', {'news': news})
 
 class NewsDetailView(DetailView):
     model = News
@@ -434,3 +444,17 @@ def edit_user(request, pk):
         'form': form,
         'user_detail': user
     })
+
+def division_detail(request, slug):
+    division = get_object_or_404(Division, slug=slug, is_active=True)
+    return render(request, 'main/division_detail.html', {
+        'division': division
+    })
+
+def news_list(request):
+    news = News.objects.filter(is_published=True).order_by('-created_at')
+    return render(request, 'main/news_list.html', {'news': news})
+
+def program_list(request):
+    programs = Program.objects.filter(is_active=True).order_by('order', 'title')
+    return render(request, 'main/program_list.html', {'programs': programs})

@@ -2,19 +2,25 @@
 {% load static %}
 
 {% block content %}
+<style>
+.hero-bg {
+    background-image: url('{% static "images/hero-bg.jpg" %}');
+}
+</style>
+
 <!-- Carousel Section -->
 <section class="relative h-[500px] w-full overflow-hidden">
     <div class="carousel-container h-full w-full">
         <!-- Slide 1 -->
-        <div class="carousel-slide absolute inset-0">
+        <div class="carousel-slide absolute inset-0 w-screen">
             <img src="{% static 'images/cou3.jpg' %}" alt="Youth Sports" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-black/50"></div>
             <div class="absolute inset-0 flex items-center justify-center">
                 <div class="text-center text-white">
-                    <h2 class="text-4xl font-bold mb-4 animate-slide-down">Empowering Youth Through Sports</h2>
+                    <h2 class="text-4xl font-bold mb-4 animate-slide-down">Empowering Youth Through Sports and Development</h2>
                     <p class="text-xl mb-8 animate-slide-up">Building champions for tomorrow</p>
-                    <a href="{% url 'programs' %}" class="btn-primary px-8 py-3 rounded-lg font-semibold inline-block">
-                        <i class="fas fa-running mr-2"></i>Explore Programs
+                    <a href="{% url 'program_list' %}" class="btn-primary px-8 py-3 rounded-lg font-semibold inline-block">
+                        Explore Programs
                     </a>
                 </div>
             </div>
@@ -68,15 +74,168 @@
 </section>
 
 <!-- Hero Section -->
-<section class="relative bg-[#23A455] text-white py-20 overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-r from-[#23A455] to-[#1a7a3f] opacity-90"></div>
-    <div class="container mx-auto px-4 relative">
+<section class="relative h-[600px] w-full bg-cover bg-center hero-bg">
+    <div class="absolute inset-0 bg-black/60"></div>
+    <div class="container mx-auto px-4 h-full flex items-center relative z-10">
         <div class="max-w-3xl mx-auto text-center">
-            <h1 class="text-5xl font-bold mb-6 animate-slide-down">Empowering Youth Through Sports</h1>
-            <p class="text-xl mb-8 animate-slide-up">Building a brighter future for Nasarawa State through youth development and sporting excellence.</p>
-            <a href="{% url 'programs' %}" class="bg-[var(--nasarawa-yellow)] text-[#23A455] px-8 py-3 rounded-lg font-semibold hover:bg-[#e6c200] transition duration-300 inline-block">
-                <i class="fas fa-running mr-2"></i>Explore Our Programs
+            <h1 class="text-5xl font-bold mb-6 animate-slide-down text-white">Empowering Youth Through Sports</h1>
+            <p class="text-xl mb-8 animate-slide-up text-white">Building a brighter future for Nasarawa State through youth development and sporting excellence.</p>
+            <a href="{% url 'program_list' %}" class="bg-[var(--nasarawa-yellow)] text-[#23A455] px-8 py-3 rounded-lg font-semibold hover:bg-[#e6c200] transition duration-300 inline-block">
+                Explore Our Programs
             </a>
+        </div>
+    </div>
+</section>
+
+<!-- Ministry Image Section -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="relative" data-aos="fade-right">
+                <img src="{% static 'images/ministry-building.jpg' %}" alt="Ministry of Youth and Sports Building" class="rounded-lg shadow-lg w-full">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-lg"></div>
+            </div>
+            <div class="space-y-6" data-aos="fade-left">
+                <h2 class="text-3xl font-bold text-[#23A455]">About The Commission</h2>
+                <p class="text-gray-600">The Nasarawa State Ministry of Youth and Sports Development is dedicated to fostering youth empowerment and sporting excellence across the state. Our modern facilities and dedicated staff work together to create opportunities for young people to thrive.</p>
+                <a href="{% url 'about' %}" class="btn-primary px-6 py-2 rounded-lg font-semibold inline-block">
+                    <i class="fas fa-info-circle mr-2"></i>Learn More About Us
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Commissioner Section -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12 text-[#23A455]">
+            <i class="fas fa-user-tie mr-2"></i>Our Leadership
+        </h2>
+        {% if commissioner %}
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center gap-8">
+                <div class="w-full md:w-1/3">
+                    <img src="{{ commissioner.image.url }}" alt="{{ commissioner.name }}" 
+                         class="rounded-lg shadow-lg w-full h-auto object-cover">
+                </div>
+                <div class="w-full md:w-2/3">
+                    <h3 class="text-2xl font-bold mb-2">{{ commissioner.name }}</h3>
+                    <p class="text-lg text-gray-600 mb-4">{{ commissioner.title }}</p>
+                    <div class="prose max-w-none">
+                        {{ commissioner.bio|safe }}
+                    </div>
+                    <div class="mt-6 flex gap-4">
+                        {% if commissioner.email %}
+                        <a href="mailto:{{ commissioner.email }}" class="text-[#23A455] hover:text-[#1a7a3f]">
+                            <i class="fas fa-envelope text-xl"></i>
+                        </a>
+                        {% endif %}
+                        {% if commissioner.facebook %}
+                        <a href="{{ commissioner.facebook }}" target="_blank" class="text-[#23A455] hover:text-[#1a7a3f]">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        {% endif %}
+                        {% if commissioner.twitter %}
+                        <a href="{{ commissioner.twitter }}" target="_blank" class="text-[#23A455] hover:text-[#1a7a3f]">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        {% endif %}
+                        {% if commissioner.linkedin %}
+                        <a href="{{ commissioner.linkedin }}" target="_blank" class="text-[#23A455] hover:text-[#1a7a3f]">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Featured Programs -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12 text-[#23A455]"><i class="fas fa-star mr-2"></i>Our Programs</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Youth Development -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover" data-aos="fade-up">
+                <div class="p-6">
+                    <div class="text-[#23A455] text-4xl mb-4">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4 text-[#23A455]">Youth Development</h3>
+                    <p class="text-gray-600 mb-4">Empowering young people through education, skills development, and leadership training.</p>
+                    <button onclick="toggleDescription('youth')" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300 w-full text-left">
+                        <i class="fas fa-chevron-down mr-1"></i>Learn More
+                    </button>
+                    <div id="youth-description" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                        <p class="text-gray-700">
+                            Our Youth Development program focuses on:
+                            <ul class="list-disc ml-4 mt-2">
+                                <li>Leadership training and mentorship</li>
+                                <li>Skills acquisition programs</li>
+                                <li>Educational support and scholarships</li>
+                                <li>Career guidance and counseling</li>
+                                <li>Entrepreneurship development</li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sports Development -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover" data-aos="fade-up" data-aos-delay="100">
+                <div class="p-6">
+                    <div class="text-[#23A455] text-4xl mb-4">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4 text-[#23A455]">Sports Development</h3>
+                    <p class="text-gray-600 mb-4">Promoting sporting excellence through training, competitions, and facilities development.</p>
+                    <button onclick="toggleDescription('sports')" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300 w-full text-left">
+                        <i class="fas fa-chevron-down mr-1"></i>Learn More
+                    </button>
+                    <div id="sports-description" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                        <p class="text-gray-700">
+                            Our Sports Development initiatives include:
+                            <ul class="list-disc ml-4 mt-2">
+                                <li>Professional coaching and training</li>
+                                <li>State-wide sports competitions</li>
+                                <li>Sports facilities maintenance</li>
+                                <li>Athlete development programs</li>
+                                <li>Sports medicine and rehabilitation</li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Community Engagement -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover" data-aos="fade-up" data-aos-delay="200">
+                <div class="p-6">
+                    <div class="text-[#23A455] text-4xl mb-4">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4 text-[#23A455]">Community Engagement</h3>
+                    <p class="text-gray-600 mb-4">Building stronger communities through youth and sports initiatives.</p>
+                    <button onclick="toggleDescription('community')" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300 w-full text-left">
+                        <i class="fas fa-chevron-down mr-1"></i>Learn More
+                    </button>
+                    <div id="community-description" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                        <p class="text-gray-700">
+                            Our Community Engagement programs include:
+                            <ul class="list-disc ml-4 mt-2">
+                                <li>Community sports events</li>
+                                <li>Youth outreach programs</li>
+                                <li>Local partnerships</li>
+                                <li>Volunteer opportunities</li>
+                                <li>Community development projects</li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -133,71 +292,25 @@
     </div>
 </section>
 
-<!-- Featured Programs -->
-<section class="py-16">
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-12 text-[#23A455]"><i class="fas fa-star mr-2"></i>Our Programs</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Youth Development -->
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover" data-aos="fade-up">
-                <div class="p-6">
-                    <div class="text-[#23A455] text-4xl mb-4">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-4 text-[#23A455]">Youth Development</h3>
-                    <p class="text-gray-600 mb-4">Empowering young people through education, skills development, and leadership training.</p>
-                    <a href="#" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300">
-                        <i class="fas fa-arrow-right mr-1"></i>Learn More
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Sports Development -->
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover" data-aos="fade-up" data-aos-delay="100">
-                <div class="p-6">
-                    <div class="text-[#23A455] text-4xl mb-4">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-4 text-[#23A455]">Sports Development</h3>
-                    <p class="text-gray-600 mb-4">Promoting sporting excellence through training, competitions, and facilities development.</p>
-                    <a href="#" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300">
-                        <i class="fas fa-arrow-right mr-1"></i>Learn More
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Community Engagement -->
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover" data-aos="fade-up" data-aos-delay="200">
-                <div class="p-6">
-                    <div class="text-[#23A455] text-4xl mb-4">
-                        <i class="fas fa-handshake"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-4 text-[#23A455]">Community Engagement</h3>
-                    <p class="text-gray-600 mb-4">Building stronger communities through youth and sports initiatives.</p>
-                    <a href="#" class="text-[#23A455] hover:text-[#1a7a3f] transition-colors duration-300">
-                        <i class="fas fa-arrow-right mr-1"></i>Learn More
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Ministry Image Section -->
+<!-- Divisions Section -->
 <section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div class="relative" data-aos="fade-right">
-                <img src="{% static 'images/ministry-building.jpg' %}" alt="Ministry of Youth and Sports Building" class="rounded-lg shadow-lg w-full">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-lg"></div>
+        <h2 class="text-3xl font-bold text-center mb-12 text-[#23A455]">
+            <i class="fas fa-building mr-2"></i>Our Divisions
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for division in divisions %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300">
+                <img src="{{ division.image.url }}" alt="{{ division.name }}" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">{{ division.name }}</h3>
+                    <p class="text-gray-600 mb-4">{{ division.description|truncatewords:30 }}</p>
+                    <a href="{% url 'division_detail' division.slug %}" class="inline-block bg-[#23A455] text-white px-4 py-2 rounded hover:bg-[#1a7a3f] transition duration-300">
+                        Learn More
+                    </a>
+                </div>
             </div>
-            <div class="space-y-6" data-aos="fade-left">
-                <h2 class="text-3xl font-bold text-[#23A455]">About Our Ministry</h2>
-                <p class="text-gray-600">The Nasarawa State Ministry of Youth and Sports Development is dedicated to fostering youth empowerment and sporting excellence across the state. Our modern facilities and dedicated staff work together to create opportunities for young people to thrive.</p>
-                <a href="{% url 'about' %}" class="btn-primary px-6 py-2 rounded-lg font-semibold inline-block">
-                    <i class="fas fa-info-circle mr-2"></i>Learn More About Us
-                </a>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -262,5 +375,21 @@
         // Initialize first slide
         showSlide(0);
     });
+
+    function toggleDescription(id) {
+        const description = document.getElementById(`${id}-description`);
+        const button = document.querySelector(`button[onclick="toggleDescription('${id}')"]`);
+        const icon = button.querySelector('i');
+
+        if (description.classList.contains('hidden')) {
+            description.classList.remove('hidden');
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+        } else {
+            description.classList.add('hidden');
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+        }
+    }
 </script>
-{% endblock %} 
+{% endblock %}

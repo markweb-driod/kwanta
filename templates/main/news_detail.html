@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- News Article Header -->
+<section class="relative py-20 bg-[#23A455]">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#23A455] to-[#1a7a3f] opacity-90"></div>
+    <div class="container mx-auto px-4 relative">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ news.title }}</h1>
+            <div class="flex items-center justify-center text-lg">
+                <span><i class="far fa-calendar-alt mr-2"></i>{{ news.created_at|date:"F j, Y" }}</span>
+                {% if news.category %}
+                <span class="mx-4">•</span>
+                <span><i class="far fa-folder mr-2"></i>{{ news.category.name }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- News Article Content -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <article class="bg-white rounded-lg shadow-lg overflow-hidden">
+                {% if news.image %}
+                <img src="{{ news.image.url }}" alt="{{ news.title }}" class="w-full h-96 object-cover">
+                {% endif %}
+                <div class="p-8">
+                    <div class="prose max-w-none">
+                        {{ news.content|safe }}
+                    </div>
+
+                    {% if news.tags.exists %}
+                    <div class="mt-8 pt-8 border-t">
+                        <h3 class="text-lg font-bold mb-4">Tags</h3>
+                        <div class="flex flex-wrap gap-2">
+                            {% for tag in news.tags.all %}
+                            <span class="inline-block bg-gray-100 text-gray-600 px-3 py-1 rounded">
+                                #{{ tag.name }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if news.source_url %}
+                    <div class="mt-8 pt-8 border-t">
+                        <h3 class="text-lg font-bold mb-4">Source</h3>
+                        <a href="{{ news.source_url }}" target="_blank" class="text-[#23A455] hover:text-[#1a7a3f]">
+                            <i class="fas fa-external-link-alt mr-2"></i>Read Original Article
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </article>
+
+            <!-- Share Buttons -->
+            <div class="mt-8 text-center">
+                <h3 class="text-lg font-bold mb-4">Share This Article</h3>
+                <div class="flex justify-center space-x-4">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                       target="_blank"
+                       class="text-[#23A455] hover:text-[#1a7a3f] text-2xl">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ news.title }}" 
+                       target="_blank"
+                       class="text-[#23A455] hover:text-[#1a7a3f] text-2xl">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ news.title }}" 
+                       target="_blank"
+                       class="text-[#23A455] hover:text-[#1a7a3f] text-2xl">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="mailto:?subject={{ news.title }}&body={{ request.build_absolute_uri }}" 
+                       class="text-[#23A455] hover:text-[#1a7a3f] text-2xl">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related News -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Related News</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for related in news.get_related_news|slice:":3" %}
+            <article class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300">
+                {% if related.image %}
+                <img src="{{ related.image.url }}" alt="{{ related.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+                <div class="p-6">
+                    <div class="text-gray-500 text-sm mb-2">
+                        <i class="far fa-calendar-alt mr-2"></i>{{ related.created_at|date:"F j, Y" }}
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 hover:text-[#23A455]">
+                        <a href="{% url 'news_detail' related.slug %}">{{ related.title }}</a>
+                    </h3>
+                    <p class="text-gray-600 mb-4">{{ related.content|truncatewords:20|safe }}</p>
+                    <a href="{% url 'news_detail' related.slug %}" class="text-[#23A455] hover:text-[#1a7a3f]">
+                        Read More <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

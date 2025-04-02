@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Programs Header -->
+<section class="relative py-20 bg-[#23A455]">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#23A455] to-[#1a7a3f] opacity-90"></div>
+    <div class="container mx-auto px-4 relative">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Our Programs</h1>
+            <p class="text-xl">Discover our range of youth development and sports programs</p>
+        </div>
+    </div>
+</section>
+
+<!-- Programs Grid -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for program in programs %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300">
+                {% if program.image %}
+                <img src="{{ program.image.url }}" alt="{{ program.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+                <div class="p-6">
+                    <h2 class="text-xl font-bold mb-2">{{ program.title }}</h2>
+                    <div class="text-gray-500 text-sm mb-4">
+                        <p><i class="far fa-calendar-alt mr-2"></i>Duration: {{ program.duration }}</p>
+                        {% if program.location %}
+                        <p class="mt-1"><i class="fas fa-map-marker-alt mr-2"></i>{{ program.location }}</p>
+                        {% endif %}
+                    </div>
+                    <p class="text-gray-600 mb-4">{{ program.description|truncatewords:30|safe }}</p>
+                    <div class="flex items-center justify-between">
+                        <a href="{% url 'program_detail' program.slug %}" class="inline-block bg-[#23A455] text-white px-4 py-2 rounded hover:bg-[#1a7a3f] transition duration-300">
+                            Learn More
+                        </a>
+                        {% if program.is_registration_open %}
+                        <span class="text-green-500"><i class="fas fa-check-circle mr-1"></i>Registration Open</span>
+                        {% else %}
+                        <span class="text-red-500"><i class="fas fa-times-circle mr-1"></i>Registration Closed</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-8">
+                <p class="text-gray-600">No programs available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+            <p class="text-gray-600 mb-8">Join our programs and be part of the future of sports in Nasarawa State.</p>
+            <a href="{% url 'contact' %}" class="inline-block bg-[#23A455] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#1a7a3f] transition duration-300">
+                <i class="fas fa-envelope mr-2"></i>Contact Us
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

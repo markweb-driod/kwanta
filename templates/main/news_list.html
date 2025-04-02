@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- News Header -->
+<section class="relative py-20 bg-[#23A455]">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#23A455] to-[#1a7a3f] opacity-90"></div>
+    <div class="container mx-auto px-4 relative">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Latest News</h1>
+            <p class="text-xl">Stay updated with the latest news and announcements</p>
+        </div>
+    </div>
+</section>
+
+<!-- News Grid -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for item in news %}
+            <article class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300">
+                {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+                <div class="p-6">
+                    <div class="flex items-center text-gray-500 text-sm mb-2">
+                        <i class="far fa-calendar-alt mr-2"></i>
+                        {{ item.created_at|date:"F j, Y" }}
+                        {% if item.category %}
+                        <span class="mx-2">•</span>
+                        <i class="far fa-folder mr-2"></i>
+                        {{ item.category.name }}
+                        {% endif %}
+                    </div>
+                    <h2 class="text-xl font-bold mb-2 hover:text-[#23A455]">
+                        <a href="{% url 'news_detail' item.slug %}">{{ item.title }}</a>
+                    </h2>
+                    <p class="text-gray-600 mb-4">{{ item.content|truncatewords:30|safe }}</p>
+                    <a href="{% url 'news_detail' item.slug %}" class="inline-block bg-[#23A455] text-white px-4 py-2 rounded hover:bg-[#1a7a3f] transition duration-300">
+                        Read More
+                    </a>
+                    {% if item.tags.exists %}
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        {% for tag in item.tags.all %}
+                        <span class="inline-block bg-gray-100 text-gray-600 text-sm px-3 py-1 rounded">
+                            #{{ tag.name }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </article>
+            {% empty %}
+            <div class="col-span-full text-center py-8">
+                <p class="text-gray-600">No news articles available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

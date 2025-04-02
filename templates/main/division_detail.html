@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Division Detail Header -->
+<section class="relative py-20 bg-[#23A455]">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#23A455] to-[#1a7a3f] opacity-90"></div>
+    <div class="container mx-auto px-4 relative">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ division.name }}</h1>
+            {% if division.website %}
+            <a href="{{ division.website }}" target="_blank" class="inline-flex items-center text-white hover:text-yellow-300 transition duration-300">
+                <i class="fas fa-external-link-alt mr-2"></i>Visit Website
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Division Content -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <img src="{{ division.image.url }}" alt="{{ division.name }}" class="w-full h-64 object-cover">
+                <div class="p-8">
+                    <div class="prose max-w-none">
+                        {{ division.description|safe }}
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {% if division.email or division.phone %}
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold mb-4">Contact Information</h3>
+                            {% if division.email %}
+                            <p class="flex items-center mb-2">
+                                <i class="fas fa-envelope mr-2 text-[#23A455]"></i>
+                                <a href="mailto:{{ division.email }}" class="text-gray-600 hover:text-[#23A455]">
+                                    {{ division.email }}
+                                </a>
+                            </p>
+                            {% endif %}
+                            {% if division.phone %}
+                            <p class="flex items-center mb-2">
+                                <i class="fas fa-phone mr-2 text-[#23A455]"></i>
+                                <a href="tel:{{ division.phone }}" class="text-gray-600 hover:text-[#23A455]">
+                                    {{ division.phone }}
+                                </a>
+                            </p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        {% if division.address %}
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold mb-4">Location</h3>
+                            <p class="flex items-start">
+                                <i class="fas fa-map-marker-alt mr-2 mt-1 text-[#23A455]"></i>
+                                <span class="text-gray-600">{{ division.address|linebreaks }}</span>
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Social Media Links -->
+                    {% if division.facebook or division.twitter or division.instagram %}
+                    <div class="mt-8">
+                        <h3 class="text-xl font-bold mb-4">Follow Us</h3>
+                        <div class="flex gap-4">
+                            {% if division.facebook %}
+                            <a href="{{ division.facebook }}" target="_blank" class="text-[#23A455] hover:text-[#1a7a3f] text-2xl">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            {% endif %}
+                            {% if division.twitter %}
+                            <a href="{{ division.twitter }}" target="_blank" class="text-[#23A455] hover:text-[#1a7a3f] text-2xl">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            {% endif %}
+                            {% if division.instagram %}
+                            <a href="{{ division.instagram }}" target="_blank" class="text-[#23A455] hover:text-[#1a7a3f] text-2xl">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

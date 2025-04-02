@@ -8,15 +8,18 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     
     # News URLs
-    path('news/', views.NewsListView.as_view(), name='news'),
-    path('news/<slug:slug>/', views.NewsDetailView.as_view(), name='news_detail'),
+    path('news/', views.news_list, name='news_list'),
+    path('news/<slug:slug>/', views.news_detail, name='news_detail'),
     path('news/tag/<slug:tag>/', views.NewsListView.as_view(), name='news_by_tag'),
     path('news/category/<slug:category>/', views.NewsListView.as_view(), name='news_by_category'),
     
     # Programs URLs
-    path('programs/', views.programs, name='programs'),
+    path('programs/', views.program_list, name='program_list'),
     path('programs/<slug:slug>/', views.program_detail, name='program_detail'),
     path('programs/category/<slug:category>/', views.programs, name='programs_by_category'),
+    
+    # Divisions URLs
+    path('divisions/<slug:slug>/', views.division_detail, name='division_detail'),
     
     # Events URLs
     path('events/', views.EventListView.as_view(), name='events'),
